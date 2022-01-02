@@ -10,7 +10,12 @@ import avant.spring.user.domain.User;
 public class UserDao {
 	ConnectionMaker scm;
 
-	public UserDao(ConnectionMaker scm) {
+/*
+ * public UserDao(ConnectionMaker scm) {
+ * this.scm = scm;
+ * }
+ */
+	public void setConnectionMaker(ConnectionMaker scm) {
 		this.scm = scm;
 	}
 

@@ -10,7 +10,8 @@ public class DaoFactory {
 	public UserDao userDao() {
 		ConnectionMaker scm = connectionMaker();
 
-		UserDao dao = new UserDao(scm);
+		UserDao dao = new UserDao();
+		dao.setConnectionMaker(scm);
 
 		return dao;
 	}
