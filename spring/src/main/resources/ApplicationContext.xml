@@ -9,5 +9,8 @@
 	<bean id="userDao" class="avant.spring.user.dao.UserDao">
 		<property name="connectionMaker" ref="connectionMaker" />
 	</bean>
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource" />
 </beans>
 						

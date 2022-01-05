@@ -5,22 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import avant.spring.user.domain.User;
 
 public class UserDao {
-	ConnectionMaker scm;
+//	ConnectionMaker scm;
+	private DataSource dataSource;
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
 /*
- * public UserDao(ConnectionMaker scm) {
+ * this.scm = scm;
+ * }
+ *
+ * public void setConnectionMaker(ConnectionMaker scm) {
  * this.scm = scm;
  * }
  */
-	public void setConnectionMaker(ConnectionMaker scm) {
-		this.scm = scm;
-	}
-
 	public void add(User user) throws SQLException, ClassNotFoundException {
-		Connection c = scm.makeNewConnection();
+//		Connection c = scm.makeNewConnection();
+		Connection c = dataSource.getConnection();
 
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
@@ -35,7 +42,8 @@ public class UserDao {
 	}
 
 	public User get(String id) throws SQLException, ClassNotFoundException {
-		Connection c = scm.makeNewConnection();
+//		Connection c = scm.makeNewConnection();
+		Connection c = dataSource.getConnection();
 
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id = ?");
