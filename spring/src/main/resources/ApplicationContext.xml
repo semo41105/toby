@@ -4,13 +4,16 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="connectionMaker" class="avant.spring.user.dao.SimpleConnectionMaker" />
-
 	<bean id="userDao" class="avant.spring.user.dao.UserDao">
-		<property name="connectionMaker" ref="connectionMaker" />
+		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+
 	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource" />
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:13306/spring" />
+		<property name="username" value="root" />
+		<property name="password" value="little1" />
+	</bean>
 </beans>
 						

@@ -15,7 +15,7 @@ public class UserMainTest {
 		UserDao userDao = context.getBean("userDao", UserDao.class);
 
 		User user = new User();
-		user.setId("spring2");
+		user.setId("spring3");
 		user.setName("스프링");
 		user.setPassword("123456");
 
