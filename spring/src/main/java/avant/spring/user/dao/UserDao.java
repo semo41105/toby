@@ -2,7 +2,6 @@ package avant.spring.user.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -14,159 +13,27 @@ public class UserDao {
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+		jdbcContext = new JdbcContext();
+		jdbcContext.setDataSource(dataSource);
 	}
 
-	public void add(User user) throws SQLException, ClassNotFoundException {
-		Connection c = null;
-		PreparedStatement ps = null;
+	private JdbcContext jdbcContext;
 
-		try {
-			c = dataSource.getConnection();
+	public void add(final User user) throws SQLException {
+		jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			try {
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
+			public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+				PreparedStatement ps = c.prepareStatement(
+						"insert into users(id, name, password) values(?,?,?)");
+				ps.setString(1, user.getId());
+				ps.setString(2, user.getName());
+				ps.setString(3, user.getPassword());
+				return ps;
 			}
-			try {
-				if (c != null) {
-					c.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-//	public PreparedStatement addStmt(Connection c) {
-//		PreparedStatement ps = c.prepareStatement(
-//				"insert into users(id, name, password) values(?,?,?)");
-//		ps.setString(1, user.getId());
-//		ps.setString(2, user.getName());
-//		ps.setString(3, user.getPassword());
-//		return ps;
-//	}
-
-	public PreparedStatement deleteAllStmt(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("delete from users");
-		return ps;
+		});
 	}
 
 	public void deleteAll() throws SQLException {
-		Connection c = null;
-		PreparedStatement ps = null;
-
-		try {
-			c = dataSource.getConnection();
-			ps = deleteAllStmt(c);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			throw e;
-		} finally {
-			try {
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			try {
-				if (c != null) {
-					c.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		jdbcContext.execute("delete from users");
 	}
-
-	public User get(String id) throws SQLException, ClassNotFoundException {
-		Connection c = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		User user = new User();
-		try {
-			c = dataSource.getConnection();
-			ps = c.prepareStatement(
-					"select * from users where id = ?");
-			ps.setString(1, id);
-
-			rs = ps.executeQuery();
-			rs.next();
-			user.setId(rs.getString("id"));
-
-		} catch (SQLException e) {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				if (c != null) {
-					c.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-
-		return user;
-	}
-
-	public int getCount() throws SQLException {
-		Connection c = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		int count = 0;
-
-		try {
-			c = dataSource.getConnection();
-			ps = c.prepareStatement(
-					"select count(*) from users");
-
-			rs = ps.executeQuery();
-			rs.next();
-			count = rs.getInt(1);
-
-		} catch (SQLException e) {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				if (c != null) {
-					c.close();
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return count;
-	}
-
 }
